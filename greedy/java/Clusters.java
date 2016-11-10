@@ -40,26 +40,16 @@ class VerVerEdgeComparator implements Comparator<VerVerEdge> {
 	}
 }
 
-class VerVerEdgeComparator1 implements Comparator<VerVerEdge> {
-	public int compare(VerVerEdge first, VerVerEdge second) {
-		//return second.getEdge() - first.getEdge();
-		return first.getEdge() - second.getEdge();
-	}
-}
 
 class Clusters {
 
 	HashMap<Integer, ArrayList<AdjVerEdge>> graph = new HashMap<>();
 	Set<Integer> totalNumberOfVerts = new HashSet<Integer>();
 	PriorityQueue<VerVerEdge> queue = new PriorityQueue<VerVerEdge>(new VerVerEdgeComparator());
-	PriorityQueue<VerVerEdge> queue1 = new PriorityQueue<VerVerEdge>(new VerVerEdgeComparator1());
-
-
+	PriorityQueue<VerVerEdge> queue1 = new PriorityQueue<VerVerEdge>(new VerVerEdgeComparator());
 
 	public void doClustering(int k) {
-		VerVerEdge obj1 = queue1.poll();
-		System.out.println("first = " + obj1.getVer1() + " second " + obj1.getVer2());
-		System.out.println("edge = "  + obj1.getEdge());
+
 		ArrayList<ArrayList<Integer>> clusters = new ArrayList<ArrayList<Integer>>();
 		for (int in : totalNumberOfVerts) {
 			ArrayList<Integer> list = new ArrayList<Integer>();
@@ -68,9 +58,7 @@ class Clusters {
 		}
 						
 		ArrayList<Integer> listOfIndexes = new ArrayList<Integer>();
-		int count = 1;
 
-		//while (clusters.size() != k) {
 		while (!queue.isEmpty()) {
 			VerVerEdge obj = queue.poll();
 			int first = obj.getVer1();
@@ -86,8 +74,6 @@ class Clusters {
 			for (int in : listOfIndexes) {
 				newCluster.addAll(clusters.get(in));
 			}
-
-			
 
 			int k1 = 0;
 			int flag = 0;
@@ -110,14 +96,12 @@ class Clusters {
 			if (clusters.size() == k) {
 				break;
 			}
-			count++;
 		}
 
 		int distance = 0;
 
 		while (!queue1.isEmpty()) {
 			VerVerEdge vve = queue1.poll();
-
 
 			for (ArrayList<Integer> in : clusters) {
 				if (in.contains(vve.getVer1()) && !in.contains(vve.getVer2())) {
@@ -150,27 +134,6 @@ class Clusters {
 					VerVerEdge obj = new VerVerEdge(first, second, third);
 					queue.offer(obj);
 					queue1.offer(obj);
-
-
-					AdjVerEdge adjVerEdge1 = null;
-					AdjVerEdge adjVerEdge2 = null;
-					if (!graph.containsKey(first)) {
-						ArrayList<AdjVerEdge> newList = new ArrayList<>();
-						newList.add(new AdjVerEdge(second, third));
-						graph.put(first, newList);
-						
-					} else {
-						graph.get(first).add(new AdjVerEdge(second, third));
-					}
-
-					if (!graph.containsKey(second)) {
-						ArrayList<AdjVerEdge> newList1 = new ArrayList<>();
-						newList1.add(new AdjVerEdge(first, third));
-						graph.put(second, newList1);
-					} else {
-						graph.get(second).add(new AdjVerEdge(first, third));
-					}
-
 					totalNumberOfVerts.add(first);
 					totalNumberOfVerts.add(second);
 
