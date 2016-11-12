@@ -150,10 +150,10 @@ class Hamming {
 					}
 
 					String newNode = sb.toString();
-					setOfNodesAsStrings.add(newNode);
+					//setOfNodesAsStrings.add(newNode);
 					HammingNode hammingNode = new HammingNode(newNode);
 					graph.put(newNode, hammingNode);
-					listOfHammingNodes.add(hammingNode);
+					//listOfHammingNodes.add(hammingNode);
 
 					sb.setLength(0);
 
@@ -229,7 +229,7 @@ class Hamming {
 	}
 
 	public void doUF() {
-		for (HammingNode node : listOfHammingNodes) {
+		for (HammingNode node : graph.values()) {
 			for (HammingNode neighbour : getOneOrTwoAway(node.getValue())) {
 				//System.out.println("1");
 				//System.out.println(neighbour);
@@ -247,14 +247,15 @@ class Hamming {
 	}
 
 	public static void main(String[] args) {
+		System.out.println("starting....");
 		Hamming hamming = new Hamming();
 		hamming.readFile();
 
 		//System.out.println("The size = " + hamming.setOfNodesAsStrings);
 		hamming.doUF();
-		for (HammingNode node : hamming.finalClusters) {
-			//System.out.println(node.listOfChilden);
-		}
+		// for (HammingNode node : hamming.finalClusters) {
+		// 	//System.out.println(node.listOfChilden);
+		// }
 		System.out.println(hamming.finalClusters.size());
 		//System.out.println(hamming.getDistance("001", "111"));
 
