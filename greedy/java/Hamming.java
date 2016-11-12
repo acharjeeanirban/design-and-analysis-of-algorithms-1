@@ -8,6 +8,8 @@ class HammingNode {
 
 	String value;
 	HammingNode leader;
+	int numberOfChildren = 1;
+	Set<HammingNode> listOfChilden = new HashSet<HammingNode>();
 
 	HammingNode(String value) {
 		this.value = value;
@@ -16,6 +18,10 @@ class HammingNode {
 
 	public void setLeader(HammingNode leader) {
 		this.leader = leader;
+	}
+
+	public String toString() {
+		return this.value;
 	}
 
 	public String getValue() {
@@ -35,10 +41,20 @@ class HammingNode {
 		return value.length();
 	}
 
+	public int getNumberOfChildren() {
+		return numberOfChildren;
+	}
+
+	public void setnumberOfChildren() {
+		//return numberOfChildren;
+	}
+
 }
 
 
 class Hamming {
+
+	HashMap<String, HammingNode> graph = new HashMap<>();
 
 	public int getDistance(String s1, String s2) {
 		char arr1[] = s1.toCharArray();
@@ -53,7 +69,9 @@ class Hamming {
 		return distance;
 	}
 
-	public ArrayList<String> getOneOrTwoAway(String input) {
+	public ArrayList<HammingNode> getOneOrTwoAway(String input) {
+		//System.out.println("The getOneOrTwoAway : " + input);
+
 		ArrayList<HammingNode> list = new ArrayList<HammingNode>();
 		char arr[] = input.toCharArray();
 		StringBuffer sb = new StringBuffer();
@@ -66,11 +84,12 @@ class Hamming {
 			} else {
 				sb.append(input.substring(0,i)).append('1').append(input.substring(i+1));
 			}
-			newNode = new HammingNode(sb.toString());
-			if (listOfHammingNodes.contains(newNode) {
-
+			
+			if (graph.containsKey(sb.toString())) {
+				//newNode = new HammingNode(sb.toString());
+				list.add(graph.get(sb.toString()));
 			}
-			list.add(newNode);
+			
 			sb.setLength(0);
 		}
 	
@@ -88,18 +107,29 @@ class Hamming {
 				} else {
 					sb.append(input.substring(0,i)).append(changeI).append(input.substring(i+1, j)).append('1').append(input.substring(j+1));
 				}
-				newNode = new HammingNode(sb.toString());
+				
 
-				list.add(newNode);
+				if (graph.containsKey(sb.toString())) {
+					//newNode = new HammingNode(sb.toString());
+					list.add(graph.get(sb.toString()));
+				}
 				sb.setLength(0);		
 			}
 				
 		}
+
+		// if (input.equals("1111111111000000")) {
+		// 	System.out.println("bazinga");
+		// 	System.out.println(list);
+		// }
 		
 		return list;
 	}
 
-	List<HammingNode> listOfHammingNodes = new ArrayList<>();
+	Set<HammingNode> listOfHammingNodes = new HashSet<>();
+	Set<String> setOfNodesAsStrings = new HashSet<String>();
+
+
 	public void readFile() {
 		String fileName = "/Users/anirbanacharjee/Documents/design-and-analysis-of-algorithms-1/greedy/clustering_big.txt";
 		List<String> list = new ArrayList<>();
@@ -120,10 +150,12 @@ class Hamming {
 					}
 
 					String newNode = sb.toString();
+					setOfNodesAsStrings.add(newNode);
 					HammingNode hammingNode = new HammingNode(newNode);
+					graph.put(newNode, hammingNode);
 					listOfHammingNodes.add(hammingNode);
 
-					 sb.setLength(0);
+					sb.setLength(0);
 
 					//System.out.println();
 
@@ -138,10 +170,78 @@ class Hamming {
 
 	}
 
+	Set<HammingNode> finalClusters = new HashSet<>();
+
+	public void union(HammingNode first, HammingNode second) {
+		//System.out.println("inside union");
+		//System.out.println("bazinga : " + first.listOfChilden.size() + " , " + second.listOfChilden.size());
+		//System.out.println("bazinga : " + first + " , " + second);
+
+		// if (first.getValue().equals("1111111111000000")) {
+		// 	System.out.println("bazinga : 1 " + first + " , " + second);
+		// 	System.out.println(first.listOfChilden.size());
+		// 	System.out.println(second.listOfChilden.size());
+		// }
+
+		// if (second.getValue().equals("1111111111000000")) {
+
+		// 	System.out.println("TTTTTTTTTTTTTTTTT");
+		// 	System.out.println("bazinga : 2 " + first + " , " + second);
+		// 	System.out.println(first.listOfChilden.size());
+		// 	System.out.println(second.listOfChilden.size());
+		// }
+
+		//if (second.listOfChilden.contains(first)
+		if (first.listOfChilden.size() < second.listOfChilden.size()) {
+			//System.out.println("3");
+			for (HammingNode node : first.listOfChilden) {
+				// if (node.getValue().equals("1111111111000000")) {
+				// 	System.out.println("BOOM 1");
+				// }
+				node.setLeader(second);
+				second.listOfChilden.add(node);
+			}
+			first.listOfChilden.clear();
+			first.setLeader(second);
+			second.listOfChilden.add(first);
+			second.listOfChilden.add(second);
+			// if (first.getValue().equals("1111111111000000")) {
+			// 	System.out.println("BOOM 3");
+			// }
+			finalClusters.remove(first);
+			finalClusters.add(second);
+		} else {
+			//System.out.println("4");
+			for (HammingNode node : second.listOfChilden) {
+				node.setLeader(first);
+				first.listOfChilden.add(node);
+				// if (node.getValue().equals("1111111111000000")) {
+				// 	System.out.println("BOOM 2");
+				// }
+			}
+			second.listOfChilden.clear();
+			second.setLeader(first);
+			first.listOfChilden.add(first);
+			first.listOfChilden.add(second);
+			finalClusters.remove(second);
+			finalClusters.add(first);
+		}
+	}
+
 	public void doUF() {
 		for (HammingNode node : listOfHammingNodes) {
-			for (HammingNode neighbours : getOneOrTwoAway(node.getValue())) { 
-
+			for (HammingNode neighbour : getOneOrTwoAway(node.getValue())) {
+				//System.out.println("1");
+				//System.out.println(neighbour);
+				if (node.getLeader() != neighbour.getLeader()) {
+					// if (node.getValue().equals("1111111111000000")) {
+					// 	System.out.println("found");
+					// 	System.out.println(node.getLeader());
+					// 	System.out.println(neighbour.getLeader());
+					// }
+					//System.out.println("2");
+					union(node.getLeader(), neighbour.getLeader());
+				}
 			}
 		}
 	}
@@ -149,9 +249,16 @@ class Hamming {
 	public static void main(String[] args) {
 		Hamming hamming = new Hamming();
 		hamming.readFile();
+
+		//System.out.println("The size = " + hamming.setOfNodesAsStrings);
+		hamming.doUF();
+		for (HammingNode node : hamming.finalClusters) {
+			//System.out.println(node.listOfChilden);
+		}
+		System.out.println(hamming.finalClusters.size());
 		//System.out.println(hamming.getDistance("001", "111"));
 
-		System.out.println(hamming.getOneOrTwoAway("1000"));
+		//System.out.println(hamming.getOneOrTwoAway("1000"));
 
 	}
 } 
