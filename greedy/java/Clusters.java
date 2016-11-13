@@ -43,7 +43,7 @@ class VerVerEdgeComparator implements Comparator<VerVerEdge> {
 
 class Clusters {
 
-	HashMap<Integer, ArrayList<AdjVerEdge>> graph = new HashMap<>();
+	//HashMap<Integer, ArrayList<AdjVerEdge>> graph = new HashMap<>();
 	Set<Integer> totalNumberOfVerts = new HashSet<Integer>();
 	PriorityQueue<VerVerEdge> queue = new PriorityQueue<VerVerEdge>(new VerVerEdgeComparator());
 	PriorityQueue<VerVerEdge> queue1 = new PriorityQueue<VerVerEdge>(new VerVerEdgeComparator());

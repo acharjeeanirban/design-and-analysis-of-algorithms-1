@@ -14,6 +14,7 @@ class HammingNode {
 	HammingNode(String value) {
 		this.value = value;
 		leader = this;
+		//listOfChilden.add(this);
 	}
 
 	public void setLeader(HammingNode leader) {
@@ -200,11 +201,15 @@ class Hamming {
 				// }
 				node.setLeader(second);
 				second.listOfChilden.add(node);
+				node.numberOfChildren = 0;
+				//node.listOfChilden.clear();
 			}
 			first.listOfChilden.clear();
+			first.numberOfChildren = 0;
 			first.setLeader(second);
 			second.listOfChilden.add(first);
 			second.listOfChilden.add(second);
+			second.numberOfChildren = second.listOfChilden.size();
 			// if (first.getValue().equals("1111111111000000")) {
 			// 	System.out.println("BOOM 3");
 			// }
@@ -215,14 +220,18 @@ class Hamming {
 			for (HammingNode node : second.listOfChilden) {
 				node.setLeader(first);
 				first.listOfChilden.add(node);
+				//node.listOfChilden.clear();
+				node.numberOfChildren = 0;
 				// if (node.getValue().equals("1111111111000000")) {
 				// 	System.out.println("BOOM 2");
 				// }
 			}
 			second.listOfChilden.clear();
 			second.setLeader(first);
+			second.numberOfChildren = 0;
 			first.listOfChilden.add(first);
 			first.listOfChilden.add(second);
+			first.numberOfChildren = first.listOfChilden.size();
 			finalClusters.remove(second);
 			finalClusters.add(first);
 		}
@@ -233,6 +242,10 @@ class Hamming {
 			for (HammingNode neighbour : getOneOrTwoAway(node.getValue())) {
 				//System.out.println("1");
 				//System.out.println(neighbour);
+
+				if (node.getLeader() == null || neighbour.getLeader() == null) {
+					System.out.println("DDDDDDDDDDDDDDDDDD");
+				}
 				if (node.getLeader() != neighbour.getLeader()) {
 					// if (node.getValue().equals("1111111111000000")) {
 					// 	System.out.println("found");
@@ -250,13 +263,21 @@ class Hamming {
 		System.out.println("starting....");
 		Hamming hamming = new Hamming();
 		hamming.readFile();
+		//System.out.println(hamming.graph);
 
 		//System.out.println("The size = " + hamming.setOfNodesAsStrings);
 		hamming.doUF();
 		// for (HammingNode node : hamming.finalClusters) {
 		// 	//System.out.println(node.listOfChilden);
 		// }
-		System.out.println(hamming.finalClusters.size());
+		int total = 0;
+		for (HammingNode node : hamming.graph.values()) {
+			if (node.numberOfChildren != 0) {
+				total++;
+			}
+		}
+		//System.out.println(hamming.finalClusters.size());
+		System.out.println(total);
 		//System.out.println(hamming.getDistance("001", "111"));
 
 		//System.out.println(hamming.getOneOrTwoAway("1000"));
