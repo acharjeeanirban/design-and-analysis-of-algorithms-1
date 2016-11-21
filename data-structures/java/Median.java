@@ -54,13 +54,6 @@ class Median {
 				median.add(pqLower.peek());
 			}
 
-
-
-			// if (i % 2 == 0) {
-			// 	median.add(pqLower.peek());
-			// } else {
-			// 	median.add(pqHigher.peek());
-			// }
 		}
 
 		int sum = 0;

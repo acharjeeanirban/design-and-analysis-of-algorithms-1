@@ -174,31 +174,11 @@ class Hamming {
 	Set<HammingNode> finalClusters = new HashSet<>();
 
 	public void union(HammingNode first, HammingNode second) {
-		//System.out.println("inside union");
-		//System.out.println("bazinga : " + first.listOfChilden.size() + " , " + second.listOfChilden.size());
-		//System.out.println("bazinga : " + first + " , " + second);
 
-		// if (first.getValue().equals("1111111111000000")) {
-		// 	System.out.println("bazinga : 1 " + first + " , " + second);
-		// 	System.out.println(first.listOfChilden.size());
-		// 	System.out.println(second.listOfChilden.size());
-		// }
-
-		// if (second.getValue().equals("1111111111000000")) {
-
-		// 	System.out.println("TTTTTTTTTTTTTTTTT");
-		// 	System.out.println("bazinga : 2 " + first + " , " + second);
-		// 	System.out.println(first.listOfChilden.size());
-		// 	System.out.println(second.listOfChilden.size());
-		// }
-
-		//if (second.listOfChilden.contains(first)
 		if (first.listOfChilden.size() < second.listOfChilden.size()) {
 			//System.out.println("3");
 			for (HammingNode node : first.listOfChilden) {
-				// if (node.getValue().equals("1111111111000000")) {
-				// 	System.out.println("BOOM 1");
-				// }
+
 				node.setLeader(second);
 				second.listOfChilden.add(node);
 				node.numberOfChildren = 0;
@@ -210,9 +190,7 @@ class Hamming {
 			second.listOfChilden.add(first);
 			second.listOfChilden.add(second);
 			second.numberOfChildren = second.listOfChilden.size();
-			// if (first.getValue().equals("1111111111000000")) {
-			// 	System.out.println("BOOM 3");
-			// }
+
 			finalClusters.remove(first);
 			finalClusters.add(second);
 		} else {
@@ -222,9 +200,7 @@ class Hamming {
 				first.listOfChilden.add(node);
 				//node.listOfChilden.clear();
 				node.numberOfChildren = 0;
-				// if (node.getValue().equals("1111111111000000")) {
-				// 	System.out.println("BOOM 2");
-				// }
+
 			}
 			second.listOfChilden.clear();
 			second.setLeader(first);
