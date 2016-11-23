@@ -105,7 +105,6 @@ class Dijkstra {
 			}
 			//System.out.println("baznga : the vert = " + vert);
 
-
 			if (vert != -1) {
 				initialVerts.add(vert);
 				set.remove(vert);
